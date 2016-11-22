@@ -1,0 +1,22 @@
+﻿--01.00.00 - Initial setup
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_Request]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		DROP TABLE {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+	END
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectByGUID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectByGUID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestUpdateExpirationByGUID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestUpdateExpirationByGUID]
+GO

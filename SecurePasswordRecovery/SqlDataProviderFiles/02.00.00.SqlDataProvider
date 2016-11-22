@@ -1,0 +1,87 @@
+﻿--Purge existing table/structure
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_Request]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		DROP TABLE {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+	END
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]
+GO
+
+--Create new table
+if not exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_Request]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+		(
+			RequestId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+			PortalId INT NOT NULL,
+			UserId INT NOT NULL,
+			ExpirationDate DATETIME,
+			RecoveryCode VARCHAR(50)
+		)
+	END
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectByGUID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectByGUID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}ICG_SPR_RequestUpdateExpirationByGUID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}[{objectQualifier}ICG_SPR_RequestUpdateExpirationByGUID]
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}ICG_SPR_RequestInsert]
+    @PortalId INT,
+    @UserId INT,
+    @ExpirationDate DATETIME,
+    @RecoveryCode VARCHAR(50)
+AS
+INSERT INTO {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+    (PortalId, UserId, ExpirationDate, RecoveryCode)
+VALUES
+    (@PortalId, @UserId, @ExpirationDate, @RecoveryCode)
+
+SELECT SCOPE_IDENTITY()
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectById]
+	@RequestId INT
+AS
+SELECT
+	RequestId, PortalId, UserId, ExpirationDate, RecoveryCode
+FROM {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+WHERE RequestId = @RequestId
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}ICG_SPR_RequestSelectByGUID]
+	@RecoveryCode VARCHAR(50)
+AS
+SELECT
+	RequestId, PortalId, UserId, ExpirationDate, RecoveryCode
+FROM {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+WHERE RecoveryCode = @RecoveryCode
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}ICG_SPR_RequestUpdateExpirationByGUID]
+	@RecoveryCode VARCHAR(50)
+AS
+UPDATE {databaseOwner}[{objectQualifier}ICG_SPR_Request]
+SET ExpirationDate = GETDATE()
+WHERE RecoveryCode = @RecoveryCode
+GO
+
+
+

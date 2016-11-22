@@ -1,0 +1,9 @@
+﻿.ICG_SPR_Username {width: 300px;}
+.ICG_SPR_ResetCode {width: 300px;}
+.ICG_SPR_Password {width: 200px;}
+
+.dnnForm .dnnFormItem .RadCaptcha 
+{ margin-left:32%; }
+
+.dnnForm .dnnFormItem .RadCaptcha LABEL 
+{ width: inherit; float: left; }
