@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-
-namespace ICG.Modules.SecurePasswordRecovery.Components.Utility
+﻿namespace ICG.Modules.SecurePasswordRecovery.Components.Utility
 {
     /// <summary>
     /// 
@@ -19,8 +15,12 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Utility
             /// STW changed to use GUID in url
             ///return DotNetNuke.Common.Globals.NavigateURL(tabId, string.Empty, "mode=reset", "code=" + code);
             return DotNetNuke.Common.Globals.NavigateURL(tabId, string.Empty, "mode=reset", "code=" + recoverycode);
-        
+
         }
 
+        public static string GetPortalUrl(int homeTabId)
+        {
+            return DotNetNuke.Common.Globals.NavigateURL(homeTabId, string.Empty);
+        }
     }
 }

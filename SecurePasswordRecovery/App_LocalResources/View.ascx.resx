@@ -138,10 +138,16 @@
     <value>Required</value>
   </data>
   <data name="ResetEmail.Text" xml:space="preserve">
-    <value>&lt;p&gt;A password reset request has been received for your [PORTALNAME] account. &lt;/p&gt;
-&lt;p&gt;This request was for the user account [USERNAME].  If you did not request your password you may simply delete this e-mail.&lt;/p&gt;
+    <value>&lt;p&gt;Hi [FIRSTNAME]&lt;/p&gt;
+&lt;p&gt;A password reset request has been received for your [PORTALNAME] account. &lt;/p&gt;
+&lt;p&gt;If you did not request your password you may simply delete this e-mail.&lt;/p&gt;
+&lt;p&gt;This request was for the account with the &lt;strong&gt;Login : &lt;/strong&gt; [USERNAME].&lt;/p&gt;
 &lt;p&gt;To reset your password, &lt;a href="[RESETLINK]"&gt;click here&lt;/a&gt;, your reset code of [CODE], will be pre-filled.  &lt;/p&gt;
-&lt;p&gt;Simply supply a new password and you will be able to login.  If you are unable to click the link, you may copy and paste [RESETLINK] into your browsers address bar.&lt;/p&gt;</value>
+&lt;p&gt;Simply supply a new password and you will be able to login.  If you are unable to click the link, you may copy and paste [RESETLINK] into your browsers address bar.&lt;/p&gt;
+&lt;br /&gt;
+&lt;p&gt;Regards&lt;/p&gt;
+&lt;p&gt;[PORTALNAME] Support&lt;/p&gt;
+&lt;p&gt;&lt;a href="[PORTALURL]"&gt;[PORTALURL]&lt;/a&gt;&lt;/p&gt;</value>
   </data>
   <data name="ResetEmailSubject.Text" xml:space="preserve">
     <value>Password Reset Request</value>

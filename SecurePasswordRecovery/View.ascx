@@ -17,9 +17,9 @@
         </div>
          <icg:ReCaptchaControl ID="ctrlReCaptcha" runat="server" ></icg:ReCaptchaControl>
         <br/>
-        <ul>
-            <li><asp:LinkButton ID="btnRequestPasswordReset" runat="server" CssClass="dnnPrimaryAction"  resourcekey="btnRequestPasswordReset" onclick="btnRequestPasswordReset_Click" /></li>
-        </ul>
+        <p>
+            <asp:LinkButton ID="btnRequestPasswordReset" runat="server" CssClass="dnnPrimaryAction"  resourcekey="btnRequestPasswordReset" onclick="btnRequestPasswordReset_Click" />
+        </p>
     </div>
     <div class="dnnClear">&nbsp;</div>
     <div class="dnnClear">&nbsp;</div>

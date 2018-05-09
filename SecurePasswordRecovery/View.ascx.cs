@@ -149,9 +149,10 @@ namespace ICG.Modules.SecurePasswordRecovery
 
             //find user by name
             var byName = UserController.GetUserByName(PortalId, txtUsernameOrEmail.Text);
+
             if (byName != null)
             {
-                RecordAndSendRequest(byName.UserID, byName.Username, byName.Email);
+                RecordAndSendRequest(byName);
             }
             else
             {
@@ -163,7 +164,7 @@ namespace ICG.Modules.SecurePasswordRecovery
                 {
                     foreach (UserInfo currentUser in byEmail)
                     {
-                        RecordAndSendRequest(currentUser.UserID, currentUser.Username, currentUser.Email);
+                        RecordAndSendRequest(currentUser);
                     }
                 }
             }
@@ -179,7 +180,7 @@ namespace ICG.Modules.SecurePasswordRecovery
         /// <param name="userId">The user id.</param>
         /// <param name="username">The username.</param>
         /// <param name="email">The email.</param>
-        private void RecordAndSendRequest(int userId, string username, string email)
+        private void RecordAndSendRequest(UserInfo user)
         {
             double ExpiryTime = 2;
             if (Settings["ExpiryTime"] != null)
@@ -190,23 +191,34 @@ namespace ICG.Modules.SecurePasswordRecovery
             var myRequest = new PasswordResetRequest
             {
                 PortalId = PortalId,
-                UserId = userId,
+                UserId = user.UserID,
                 ExpirationDate = DateTime.Now.AddHours(ExpiryTime),
                 RecoveryCode = Guid.NewGuid().ToString()
             };
             myRequest = PasswordRecoveryController.InsertRequest(myRequest);
             var notificationEmail = new StringBuilder(Localization.GetString("ResetEmail", LocalResourceFile));
             notificationEmail.Replace("[PORTALNAME]", PortalSettings.PortalName);
-            notificationEmail.Replace("[USERNAME]", username);
+            notificationEmail.Replace("[FIRSTNAME]", !string.IsNullOrEmpty(user.FirstName) ? user.FirstName : user.Username);
+            notificationEmail.Replace("[LASTNAME]", !string.IsNullOrEmpty(user.LastName) ? user.LastName : string.Empty);
+            notificationEmail.Replace("[DISPLAYNAME]", !string.IsNullOrEmpty(user.DisplayName) ? user.DisplayName : user.Username);
+
+            notificationEmail.Replace("[USERNAME]", user.Username);
             var url = UrlUtility.GenerateResetUrl(TabId, myRequest.RecoveryCode);
             if (!url.ToLower().StartsWith("http"))
                 url = "http://" + PortalSettings.PortalAlias.HTTPAlias + url;
 
+
             notificationEmail.Replace("[RESETLINK]", url);
             notificationEmail.Replace("[CODE]", myRequest.RecoveryCode);
+
+
+            url = UrlUtility.GetPortalUrl(PortalSettings.HomeTabId);
+            notificationEmail.Replace("[PORTALURL]", url);
+
+
             try
             {
-                Mail.SendMail(PortalSettings.Email, email, string.Empty,
+                Mail.SendMail(PortalSettings.Email, user.Email, string.Empty,
                               Localization.GetString("ResetEmailSubject", LocalResourceFile),
                               notificationEmail.ToString(), string.Empty, "HTML", string.Empty, string.Empty,
                               string.Empty, string.Empty);
