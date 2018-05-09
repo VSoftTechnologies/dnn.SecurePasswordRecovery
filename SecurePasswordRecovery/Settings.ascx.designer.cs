@@ -49,21 +49,57 @@ namespace ICG.Modules.SecurePasswordRecovery {
         protected global::System.Web.UI.WebControls.CompareValidator ExpiryTimeFormat;
         
         /// <summary>
-        /// lblEnableCaptcha control.
+        /// lblEnableReCaptcha control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEnableCaptcha;
+        protected global::System.Web.UI.WebControls.Label lblEnableReCaptcha;
         
         /// <summary>
-        /// chkEnableCaptcha control.
+        /// chkEnableReCaptcha control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkEnableCaptcha;
+        protected global::System.Web.UI.WebControls.CheckBox chkEnableReCaptcha;
+        
+        /// <summary>
+        /// lblReCaptchaSiteKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReCaptchaSiteKey;
+        
+        /// <summary>
+        /// txtReCaptchaSiteKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReCaptchaSiteKey;
+        
+        /// <summary>
+        /// lblReCaptchaSecretKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReCaptchaSecretKey;
+        
+        /// <summary>
+        /// txtReCaptchaSecretKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReCaptchaSecretKey;
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using DotNetNuke.Common.Utilities;
+﻿using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
@@ -22,9 +19,9 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Controllers
         /// <param name="newPassword">The new password.</param>
         public static void SetNewPassword(int userId, int portalId, string newPassword)
         {
-            var toChange = UserController.GetUser(portalId, userId, true);
+            var toChange = UserController.GetUserById(portalId, userId);
             var password = MembershipProvider.Instance().ResetPassword(toChange, string.Empty);
-            UserController.ChangePassword(toChange, password, newPassword);        
+            UserController.ChangePassword(toChange, password, newPassword);
         }
 
         /// <summary>
@@ -43,7 +40,7 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Controllers
         /// <returns></returns>
         public static PasswordResetRequest InsertRequest(PasswordResetRequest oRequest)
         {
-            var newId = int.Parse(DataProvider.Instance().ExecuteScalar("ICG_SPR_RequestInsert", oRequest.PortalId, oRequest.UserId, oRequest.ExpirationDate, oRequest.RecoveryCode).ToString());
+            var newId = int.Parse(DataProvider.Instance().ExecuteScalar<int>("ICG_SPR_RequestInsert", oRequest.PortalId, oRequest.UserId, oRequest.ExpirationDate, oRequest.RecoveryCode).ToString());
             oRequest.RequestId = newId;
             return oRequest;
         }
@@ -57,7 +54,7 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Controllers
         {
             return CBO.FillObject<PasswordResetRequest>(DataProvider.Instance().ExecuteReader("ICG_SPR_RequestSelectById", requestId));
         }
-        
+
         /// <summary>
         /// Selects Recovery Request the by GUID.
         /// </summary>

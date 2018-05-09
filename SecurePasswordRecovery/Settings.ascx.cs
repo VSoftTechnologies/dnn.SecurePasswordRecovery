@@ -1,6 +1,6 @@
-using System;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Exceptions;
+using System;
 
 namespace ICG.Modules.SecurePasswordRecovery
 {
@@ -26,8 +26,13 @@ namespace ICG.Modules.SecurePasswordRecovery
                         txtExpiryTime.Text = "2";
                     }
 
-                    if (Settings["EnableCaptcha"] != null)
-                        chkEnableCaptcha.Checked = Convert.ToBoolean(Settings["EnableCaptcha"].ToString());
+                    if (Settings["EnableReCaptcha"] != null)
+                        chkEnableReCaptcha.Checked = Convert.ToBoolean(Settings["EnableReCaptcha"].ToString());
+                    if (Settings["ReCaptchaSiteKey"] != null)
+                        txtReCaptchaSiteKey.Text = Settings["ReCaptchaSiteKey"].ToString();
+                    if (Settings["ReCaptchaSecretKey"] != null)
+                        txtReCaptchaSecretKey.Text = Settings["ReCaptchaSecretKey"].ToString();
+
                 }
             }
             catch (Exception ex)
@@ -44,8 +49,10 @@ namespace ICG.Modules.SecurePasswordRecovery
             try
             {
                 ModuleController modules = new ModuleController();
-                modules.UpdateTabModuleSetting(this.TabModuleId, "ExpiryTime", txtExpiryTime.Text );
-                modules.UpdateTabModuleSetting(this.TabModuleId, "EnableCaptcha", chkEnableCaptcha.Checked.ToString());
+                modules.UpdateTabModuleSetting(this.TabModuleId, "ExpiryTime", txtExpiryTime.Text);
+                modules.UpdateTabModuleSetting(this.TabModuleId, "EnableReCaptcha", chkEnableReCaptcha.Checked.ToString());
+                modules.UpdateTabModuleSetting(this.TabModuleId, "ReCaptchaSiteKey", txtReCaptchaSiteKey.Text);
+                modules.UpdateTabModuleSetting(this.TabModuleId, "ReCaptchaSecretKey", txtReCaptchaSecretKey.Text);
             }
             catch (Exception ex)
             {

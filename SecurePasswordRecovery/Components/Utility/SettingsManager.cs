@@ -34,6 +34,10 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Utility
         /// </value>
         public bool IsConfigured { get; set; }
 
+        public string ReCaptchaSiteKey { get; set; }
+
+        public string ReCaptchaSecretKey { get; set; }
+
         #endregion
 
         #region Constructors
@@ -54,6 +58,12 @@ namespace ICG.Modules.SecurePasswordRecovery.Components.Utility
                 CaptchaEnabled = Convert.ToBoolean(settings["EnableCaptcha"].ToString());
             else
                 CaptchaEnabled = true;
+
+            if (settings["ReCaptchaSiteKey"] != null)
+                ReCaptchaSiteKey = settings["ReCaptchaSiteKey"].ToString();
+
+            if (settings["ReCaptchaSecretKey"] != null)
+                ReCaptchaSecretKey = settings["ReCaptchaSecretKey"].ToString();
         }
 
         #endregion

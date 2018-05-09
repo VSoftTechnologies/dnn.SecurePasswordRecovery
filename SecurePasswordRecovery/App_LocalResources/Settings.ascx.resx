@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ControlTitle_settings.Text" xml:space="preserve">
     <value>Secure Password Recovery Settings</value>
@@ -133,6 +133,12 @@
     <value>Required</value>
   </data>
   <data name="lblEnableCaptcha.Text" xml:space="preserve">
-    <value>Enable Captcha?</value>
+    <value>Enable ReCaptcha?</value>
+  </data>
+  <data name="lblReCaptchaSecretKey.Text" xml:space="preserve">
+    <value>Recaptcha Secret Key</value>
+  </data>
+  <data name="lblReCaptchaSiteKey.Text" xml:space="preserve">
+    <value>Recaptcha Site Key</value>
   </data>
 </root>

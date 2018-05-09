@@ -58,22 +58,13 @@ namespace ICG.Modules.SecurePasswordRecovery {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator UsernameorEmailRequired;
         
         /// <summary>
-        /// divCaptchaRequest control.
+        /// ctrlReCaptcha control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCaptchaRequest;
-        
-        /// <summary>
-        /// ctlCaptcha control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DotNetNuke.Web.UI.WebControls.DnnCaptcha ctlCaptcha;
+        protected global::ICG.Modules.SecurePasswordRecovery.ReCaptchaControl ctrlReCaptcha;
         
         /// <summary>
         /// btnRequestPasswordReset control.
@@ -191,24 +182,6 @@ namespace ICG.Modules.SecurePasswordRecovery {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CompareValidator ConfirmPasswordMatch;
-        
-        /// <summary>
-        /// divCaptchaReset control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divCaptchaReset;
-        
-        /// <summary>
-        /// ctlCaptchaReset control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DotNetNuke.Web.UI.WebControls.DnnCaptcha ctlCaptchaReset;
         
         /// <summary>
         /// btnResetPassword control.

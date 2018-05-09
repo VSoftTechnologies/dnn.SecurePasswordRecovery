@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Users;
@@ -7,29 +5,61 @@ using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.UI.Skins;
-using DotNetNuke.UI.Skins.Controls;
 using ICG.Modules.SecurePasswordRecovery.Components.Controllers;
 using ICG.Modules.SecurePasswordRecovery.Components.InfoObjects;
 using ICG.Modules.SecurePasswordRecovery.Components.Utility;
+using System;
+using System.Text;
+using static DotNetNuke.UI.Skins.Controls.ModuleMessage;
 
 namespace ICG.Modules.SecurePasswordRecovery
 {
     public partial class View : PortalModuleBase
     {
+        public virtual void ShowMessage(string msg, ModuleMessageType messageType)
+        {
+            clearMessagePlaceHolder();
+            Skin.AddModuleMessage(this, msg, messageType);
+
+        }
+
+        private void clearMessagePlaceHolder()
+        {
+            var ctl = this.FindControl("dnnSkinMessage");
+            if (ctl != null)
+            {
+                this.Controls.Remove(ctl);
+            }
+            Skin.AddModuleMessage(this, "", ModuleMessageType.BlueInfo);
+
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
+                clearMessagePlaceHolder();
+
+                var oConfig = new SettingsManager(Settings);
+                if (oConfig.CaptchaEnabled)
+                {
+                    ctrlReCaptcha.Visible = true;
+                    ctrlReCaptcha.SiteKey = oConfig.ReCaptchaSiteKey;
+                    ctrlReCaptcha.SecretKey = oConfig.ReCaptchaSecretKey;
+                }
+                else
+                {
+                    ctrlReCaptcha.Visible = false;
+                }
+
+
+
                 if (!IsPostBack)
                 {
-                    var oConfig = new SettingsManager(Settings);
+
+
                     if (oConfig.IsConfigured)
                     {
-                        if (!oConfig.CaptchaEnabled)
-                        {
-                            divCaptchaRequest.Visible = false;
-                            divCaptchaReset.Visible = false;
-                        }
                         if (Request.QueryString["mode"] != null)
                         {
                             //Toggle view and pre-load code if needed
@@ -41,6 +71,7 @@ namespace ICG.Modules.SecurePasswordRecovery
                         }
                         else
                         {
+
                             //Localize the single display item needed
                             litAlreadyReceived.Text =
                                 Localization.GetString("AlreadyReceived", LocalResourceFile).Replace("[RESETURL]",
@@ -48,13 +79,13 @@ namespace ICG.Modules.SecurePasswordRecovery
                                                                                                          GenerateResetUrl
                                                                                                          (
                                                                                                              TabId));
+
                         }
                     }
                     else
                     {
                         pnlRequestPasswordReset.Visible = false;
-                        Skin.AddModuleMessage(this, "Not Configured",
-                                              ModuleMessage.ModuleMessageType.YellowWarning);
+                        ShowMessage("Not Configured", ModuleMessageType.YellowWarning);
                     }
                 }
             }
@@ -71,44 +102,33 @@ namespace ICG.Modules.SecurePasswordRecovery
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected void btnResetPassword_Click(object sender, EventArgs e)
         {
-            if (ctlCaptchaReset.IsValid || divCaptchaReset.Visible == false)
+            //STW new GUID 
+            var recoveryCode = txtResetCode.Text;
+            if (recoveryCode.Length >= 1)
             {
-                //STW new GUID 
-                var recoveryCode = txtResetCode.Text;
-                if (recoveryCode.Length >= 1)
+                var code = PasswordRecoveryController.SelectByGUID(recoveryCode);
+                if (code != null && code.ExpirationDate >= DateTime.Now)
                 {
-                    var code = PasswordRecoveryController.SelectByGUID(recoveryCode);
-                    if (code != null && code.ExpirationDate >= DateTime.Now)
-                    {
-                        //Reset the password
-                        PasswordRecoveryController.SetNewPassword(code.UserId, code.PortalId, txtNewPassword.Text);
+                    //Reset the password
+                    PasswordRecoveryController.SetNewPassword(code.UserId, code.PortalId, txtNewPassword.Text);
 
-                        //expire the recoverycode
-                        PasswordRecoveryController.ExpireRecoveryCode(txtResetCode.Text);
+                    //expire the recoverycode
+                    PasswordRecoveryController.ExpireRecoveryCode(txtResetCode.Text);
 
-                        //Setup for login
-                        var SuccessMessage = new StringBuilder(Localization.GetString("ResetSuccess", LocalResourceFile));
-                        SuccessMessage.Replace("[LOGIN]", (Globals.NavigateURL(PortalSettings.LoginTabId)));
-                        Skin.AddModuleMessage(this, SuccessMessage.ToString(),
-                                              ModuleMessage.ModuleMessageType.GreenSuccess);
-                        //Hide the form
-                        pnlPerformReset.Visible = false;
-                    }
-                    else
-                    {
-                        Skin.AddModuleMessage(this, Localization.GetString("ExpiredCode", LocalResourceFile),
-                                              ModuleMessage.ModuleMessageType.YellowWarning);
-                    }
+                    //Setup for login
+                    var SuccessMessage = new StringBuilder(Localization.GetString("ResetSuccess", LocalResourceFile));
+                    SuccessMessage.Replace("[LOGIN]", (Globals.NavigateURL(PortalSettings.LoginTabId)));
+                    ShowMessage(SuccessMessage.ToString(), ModuleMessageType.GreenSuccess);
+                    //Hide the form
+                    pnlPerformReset.Visible = false;
                 }
                 else
-                    Skin.AddModuleMessage(this, Localization.GetString("InvalidCode", LocalResourceFile),
-                                          ModuleMessage.ModuleMessageType.RedError);
+                {
+                    ShowMessage(Localization.GetString("ExpiredCode", LocalResourceFile), ModuleMessageType.YellowWarning);
+                }
             }
             else
-            {
-                Skin.AddModuleMessage(this, Localization.GetString("CaptchaError", LocalResourceFile),
-                                      ModuleMessage.ModuleMessageType.RedError);
-            }
+                ShowMessage(Localization.GetString("InvalidCode", LocalResourceFile), ModuleMessageType.RedError);
         }
 
         /// <summary>
@@ -118,41 +138,39 @@ namespace ICG.Modules.SecurePasswordRecovery
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected void btnRequestPasswordReset_Click(object sender, EventArgs e)
         {
-            //perform captcha check
-            if (ctlCaptcha.IsValid || divCaptchaReset.Visible == false)
-            {
-                //find user by name
-                var byName = UserController.GetUserByName(PortalId, txtUsernameOrEmail.Text);
-                if (byName != null)
-                {
-                    RecordAndSendRequest(byName.UserID, byName.Username, byName.Email);
-                }
-                else
-                {
-                    //Try by e-mail
-                    var totalRecords = 0;
-                    var byEmail = UserController.GetUsersByEmail(PortalId, txtUsernameOrEmail.Text, 0, 10,
-                                                                 ref totalRecords);
-                    if (byEmail.Count > 0)
-                    {
-                        foreach (UserInfo currentUser in byEmail)
-                        {
-                            RecordAndSendRequest(currentUser.UserID, currentUser.Username, currentUser.Email);
-                        }
-                    }
-                }
+            var oConfig = new SettingsManager(Settings);
 
-                //Regardless show success
-                Skin.AddModuleMessage(this, Localization.GetString("RequestSent", LocalResourceFile),
-                                      ModuleMessage.ModuleMessageType.GreenSuccess);
-                pnlRequestPasswordReset.Visible = false;
+            if (oConfig.CaptchaEnabled && !ctrlReCaptcha.Validate())
+            {
+                ShowMessage("Captcha not valid - please click on the captcha", ModuleMessageType.YellowWarning);
+                ctrlReCaptcha.Visible = true;
+                return;
+            }
+
+            //find user by name
+            var byName = UserController.GetUserByName(PortalId, txtUsernameOrEmail.Text);
+            if (byName != null)
+            {
+                RecordAndSendRequest(byName.UserID, byName.Username, byName.Email);
             }
             else
             {
-                //Show Captcha Error
-                Skin.AddModuleMessage(this, Localization.GetString("CaptchaError", LocalResourceFile),
-                                      ModuleMessage.ModuleMessageType.YellowWarning);
+                //Try by e-mail
+                var totalRecords = 0;
+                var byEmail = UserController.GetUsersByEmail(PortalId, txtUsernameOrEmail.Text, 0, 10,
+                                                                ref totalRecords);
+                if (byEmail.Count > 0)
+                {
+                    foreach (UserInfo currentUser in byEmail)
+                    {
+                        RecordAndSendRequest(currentUser.UserID, currentUser.Username, currentUser.Email);
+                    }
+                }
             }
+
+            //Regardless show success
+            ShowMessage(Localization.GetString("RequestSent", LocalResourceFile), ModuleMessageType.GreenSuccess);
+            pnlRequestPasswordReset.Visible = false;
         }
 
         /// <summary>
@@ -170,18 +188,18 @@ namespace ICG.Modules.SecurePasswordRecovery
             }
 
             var myRequest = new PasswordResetRequest
-                                {
-                                    PortalId = PortalId,
-                                    UserId = userId,
-                                    ExpirationDate = DateTime.Now.AddHours(ExpiryTime),
-                                    RecoveryCode = Guid.NewGuid().ToString()
-                                };
+            {
+                PortalId = PortalId,
+                UserId = userId,
+                ExpirationDate = DateTime.Now.AddHours(ExpiryTime),
+                RecoveryCode = Guid.NewGuid().ToString()
+            };
             myRequest = PasswordRecoveryController.InsertRequest(myRequest);
             var notificationEmail = new StringBuilder(Localization.GetString("ResetEmail", LocalResourceFile));
             notificationEmail.Replace("[PORTALNAME]", PortalSettings.PortalName);
             notificationEmail.Replace("[USERNAME]", username);
             var url = UrlUtility.GenerateResetUrl(TabId, myRequest.RecoveryCode);
-            if(!url.ToLower().StartsWith("http"))
+            if (!url.ToLower().StartsWith("http"))
                 url = "http://" + PortalSettings.PortalAlias.HTTPAlias + url;
 
             notificationEmail.Replace("[RESETLINK]", url);
